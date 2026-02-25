@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: nexpay-api
+
+  datasource:
+    url: jdbc:postgresql://YOUR_DB_HOST:5432/YOUR_DB_NAME?sslmode=require
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: YOUR_JWT_SECRET_KEY
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+google:
+  client-id: YOUR_GOOGLE_CLIENT_ID
+
+stripe:
+  secret-key: YOUR_STRIPE_SECRET_KEY
+  publishable-key: YOUR_STRIPE_PUBLISHABLE_KEY
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true

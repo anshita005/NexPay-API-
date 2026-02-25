@@ -1,0 +1,25 @@
+# === Backend (Spring Boot) ===
+nexpay-api/target/
+nexpay-api/.mvn/
+nexpay-api/*.iml
+nexpay-api/.idea/
+nexpay-api/src/main/resources/application.yml
+
+# === Frontend (React/Vite) ===
+nexpay-dashboard/node_modules/
+nexpay-dashboard/dist/
+nexpay-dashboard/.env
+nexpay-dashboard/.env.local
+nexpay-dashboard/.env.development
+nexpay-dashboard/.env.production
+!nexpay-dashboard/.env.example
+
+# === IDE / OS ===
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.class
+*.jar
+*.log
