@@ -68,17 +68,6 @@ function CardForm({
         <PaymentElement
           options={{
             layout: 'tabs',
-            appearance: {
-              theme: 'night',
-              variables: {
-                colorPrimary: '#7c3aed',
-                colorBackground: '#1f2937',
-                colorText: '#f9fafb',
-                colorDanger: '#ef4444',
-                borderRadius: '10px',
-                fontSizeBase: '14px',
-              },
-            },
           }}
         />
       </div>
@@ -250,7 +239,20 @@ export default function StripeCheckoutModal({
           {step === 'card' && stripePromise && clientSecret && (
             <Elements
               stripe={stripePromise}
-              options={{ clientSecret, appearance: { theme: 'night' } }}
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: 'night',
+                  variables: {
+                    colorPrimary: '#7c3aed',
+                    colorBackground: '#1f2937',
+                    colorText: '#f9fafb',
+                    colorDanger: '#ef4444',
+                    borderRadius: '10px',
+                    fontSizeBase: '14px',
+                  },
+                },
+              }}
             >
               {error && (
                 <motion.div
