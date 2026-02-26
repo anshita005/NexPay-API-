@@ -67,7 +67,7 @@ function WalletCard({ wallet, onDeposit, onWithdraw, onFundWithCard }: any) {
       </div>
 
       <p className="text-gray-400 text-sm mb-1">{wallet.currency} Balance</p>
-      <p className="text-4xl font-bold text-white mb-3">${wallet.balance.toFixed(2)}</p>
+      <p className="text-2xl sm:text-4xl font-bold text-white mb-3">${wallet.balance.toFixed(2)}</p>
 
       {/* Wallet ID row with copy button */}
       <div className="flex items-center justify-between mb-6 bg-gray-800/50 rounded-xl px-3 py-2">
@@ -227,21 +227,22 @@ export default function Wallets() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between gap-4"
       >
-        <div>
-          <h1 className="text-3xl font-bold text-white">Wallets</h1>
-          <p className="text-gray-400 mt-1">Manage your payment wallets</p>
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Wallets</h1>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">Manage your payment wallets</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => createMutation.mutate()}
           disabled={createMutation.isPending}
-          className="btn-primary flex items-center gap-2"
+          className="btn-primary flex items-center gap-2 shrink-0 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
-          New Wallet
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">New Wallet</span>
+          <span className="sm:hidden">New</span>
         </motion.button>
       </motion.div>
 

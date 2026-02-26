@@ -1,7 +1,9 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Zap, LayoutDashboard, Wallet, ArrowLeftRight, LogOut, User, Send, ShieldCheck } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Zap, LayoutDashboard, Wallet, ArrowLeftRight, LogOut, User, Send, ShieldCheck, Menu, X } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: false },
@@ -14,27 +16,31 @@ const navItems = [
 export default function Sidebar() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
 
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
 
-  return (
-    <motion.aside
-      initial={{ x: -80, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-screen sticky top-0"
-    >
+  const sidebarContent = (
+    <>
       {/* Logo */}
-      <div className="p-6 border-b border-gray-800">
+      <div className="p-6 border-b border-gray-800 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold text-white">NexPay</span>
         </div>
+        <button onClick={() => setOpen(false)} className="lg:hidden text-gray-400 hover:text-white">
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Nav */}
@@ -75,7 +81,7 @@ export default function Sidebar() {
       {/* User + Logout */}
       <div className="p-4 border-t border-gray-800 space-y-2">
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-800">
-          <div className="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center shrink-0">
             <User className="w-4 h-4 text-white" />
           </div>
           <div className="min-w-0">
@@ -91,6 +97,57 @@ export default function Sidebar() {
           Logout
         </button>
       </div>
-    </motion.aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile header bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+            <Zap className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-lg font-bold text-white">NexPay</span>
+        </div>
+        <button onClick={() => setOpen(true)} className="text-gray-400 hover:text-white p-1">
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Desktop sidebar */}
+      <motion.aside
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="hidden lg:flex w-64 bg-gray-900 border-r border-gray-800 flex-col h-screen sticky top-0"
+      >
+        {sidebarContent}
+      </motion.aside>
+
+      {/* Mobile sidebar overlay */}
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              onClick={() => setOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="lg:hidden fixed top-0 left-0 bottom-0 w-72 bg-gray-900 border-r border-gray-800 flex flex-col z-50"
+            >
+              {sidebarContent}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

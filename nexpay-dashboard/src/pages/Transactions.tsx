@@ -141,8 +141,8 @@ export default function Transactions() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-bold text-white">Transactions</h1>
-        <p className="text-gray-400 mt-1">Your complete payment history</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">Transactions</h1>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">Your complete payment history</p>
       </motion.div>
 
       {/* Toast */}
@@ -179,8 +179,69 @@ export default function Transactions() {
         />
       </motion.div>
 
-      {/* Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card p-0 overflow-hidden">
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {isLoading ? (
+          [...Array(4)].map((_, i) => (
+            <div key={i} className="card animate-pulse space-y-3">
+              <div className="h-4 bg-gray-800 rounded w-24" />
+              <div className="h-6 bg-gray-800 rounded w-32" />
+              <div className="h-3 bg-gray-800 rounded w-40" />
+            </div>
+          ))
+        ) : filtered.length === 0 ? (
+          <div className="card text-center py-12">
+            <RotateCcw className="w-10 h-10 text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400">No transactions found</p>
+          </div>
+        ) : (
+          filtered.map((tx: Transaction, i: number) => (
+            <motion.div
+              key={tx.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              className="card space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {typeIcon(tx.type)}
+                  <span className={typeBadge(tx.type)}>{tx.type}</span>
+                </div>
+                <span className={statusBadge(tx.status)}>{tx.status}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className={`text-lg font-semibold ${amountColor(tx.type)}`}>
+                  {tx.type === 'WITHDRAWAL' || tx.type === 'TRANSFER' ? '-' : '+'}
+                  ${tx.amount.toFixed(2)}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {new Date(tx.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              {tx.description && (
+                <p className="text-gray-400 text-sm truncate">{tx.description}</p>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-gray-600">{tx.id.slice(0, 16)}...</span>
+                {tx.type === 'TRANSFER' && tx.status === 'SUCCESS' && (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setRefundTx(tx)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-900/30 text-purple-400 border border-purple-800/50 text-xs font-medium"
+                  >
+                    <CornerUpLeft className="w-3.5 h-3.5" />
+                    Refund
+                  </motion.button>
+                )}
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop table */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card p-0 overflow-hidden hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -269,7 +330,7 @@ export default function Transactions() {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination - desktop */}
         {data && data.totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800">
             <p className="text-sm text-gray-400">
@@ -288,6 +349,25 @@ export default function Transactions() {
           </div>
         )}
       </motion.div>
+
+      {/* Pagination - mobile */}
+      {data && data.totalPages > 1 && (
+        <div className="md:hidden flex items-center justify-between">
+          <p className="text-xs text-gray-400">
+            Page {page + 1}/{data.totalPages}
+          </p>
+          <div className="flex gap-2">
+            <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}
+              className="btn-secondary px-3 py-2 disabled:opacity-40">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button onClick={() => setPage((p) => Math.min(data.totalPages - 1, p + 1))} disabled={page >= data.totalPages - 1}
+              className="btn-secondary px-3 py-2 disabled:opacity-40">
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Refund Modal */}
       <AnimatePresence>

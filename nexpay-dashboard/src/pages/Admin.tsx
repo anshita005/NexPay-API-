@@ -38,12 +38,12 @@ function StatCard({ title, value, icon: Icon, color }: any) {
       animate={{ opacity: 1, y: 0 }}
       className="card flex items-center justify-between"
     >
-      <div>
-        <p className="text-sm text-gray-400 mb-1">{title}</p>
-        <p className="text-3xl font-bold text-white">{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs sm:text-sm text-gray-400 mb-1">{title}</p>
+        <p className="text-2xl sm:text-3xl font-bold text-white">{value}</p>
       </div>
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color}`}>
-        <Icon className="w-6 h-6 text-white" />
+      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 ml-3 ${color}`}>
+        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
       </div>
     </motion.div>
   )
@@ -81,12 +81,12 @@ export default function Admin() {
     <div className="space-y-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center">
-          <ShieldCheck className="w-5 h-5 text-white" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-brand-600 rounded-xl flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
-          <p className="text-gray-400 text-sm mt-0.5">Full system overview</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Admin Panel</h1>
+          <p className="text-gray-400 text-xs sm:text-sm mt-0.5">Full system overview</p>
         </div>
       </motion.div>
 
@@ -128,7 +128,65 @@ export default function Admin() {
               />
             </div>
 
-            <div className="card p-0 overflow-hidden">
+            {/* Mobile user cards */}
+            <div className="md:hidden space-y-3">
+              {usersLoading ? (
+                [...Array(3)].map((_, i) => (
+                  <div key={i} className="card animate-pulse space-y-3">
+                    <div className="h-4 bg-gray-800 rounded w-32" />
+                    <div className="h-3 bg-gray-800 rounded w-48" />
+                  </div>
+                ))
+              ) : filteredUsers.length === 0 ? (
+                <div className="card text-center py-12 text-gray-500">No users found</div>
+              ) : (
+                filteredUsers.map((user: User, i: number) => (
+                  <motion.div
+                    key={user.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                    className="card space-y-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-brand-600/30 border border-brand-600/50 rounded-full flex items-center justify-center shrink-0">
+                        <span className="text-brand-400 text-xs font-bold">
+                          {user.fullName?.charAt(0).toUpperCase() ?? '?'}
+                        </span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-white truncate">{user.fullName}</p>
+                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                      </div>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border shrink-0 ${
+                        user.role === 'ADMIN'
+                          ? 'bg-brand-900/40 text-brand-400 border-brand-800'
+                          : 'bg-gray-800 text-gray-400 border-gray-700'
+                      }`}>
+                        {user.role}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                  </motion.div>
+                ))
+              )}
+              {usersData && usersData.totalPages > 1 && (
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-400">Page {userPage + 1}/{usersData.totalPages}</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => setUserPage(p => Math.max(0, p - 1))} disabled={userPage === 0} className="btn-secondary px-3 py-2 disabled:opacity-40">
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setUserPage(p => Math.min(usersData.totalPages - 1, p + 1))} disabled={userPage >= usersData.totalPages - 1} className="btn-secondary px-3 py-2 disabled:opacity-40">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop user table */}
+            <div className="card p-0 overflow-hidden hidden md:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-800">
@@ -222,7 +280,58 @@ export default function Admin() {
               />
             </div>
 
-            <div className="card p-0 overflow-hidden">
+            {/* Mobile tx cards */}
+            <div className="md:hidden space-y-3">
+              {txLoading ? (
+                [...Array(3)].map((_, i) => (
+                  <div key={i} className="card animate-pulse space-y-3">
+                    <div className="h-4 bg-gray-800 rounded w-24" />
+                    <div className="h-6 bg-gray-800 rounded w-32" />
+                  </div>
+                ))
+              ) : filteredTx.length === 0 ? (
+                <div className="card text-center py-12 text-gray-500">No transactions found</div>
+              ) : (
+                filteredTx.map((tx: Transaction, i: number) => (
+                  <motion.div
+                    key={tx.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                    className="card space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {typeIcon(tx.type)}
+                        <span className={typeBadge(tx.type)}>{tx.type}</span>
+                      </div>
+                      <span className={statusBadge(tx.status)}>{tx.status}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold text-white">${tx.amount.toFixed(2)}</span>
+                      <span className="text-xs text-gray-500">{new Date(tx.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    {tx.description && <p className="text-gray-400 text-sm truncate">{tx.description}</p>}
+                  </motion.div>
+                ))
+              )}
+              {txData && txData.totalPages > 1 && (
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-400">Page {txPage + 1}/{txData.totalPages}</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => setTxPage(p => Math.max(0, p - 1))} disabled={txPage === 0} className="btn-secondary px-3 py-2 disabled:opacity-40">
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setTxPage(p => Math.min(txData.totalPages - 1, p + 1))} disabled={txPage >= txData.totalPages - 1} className="btn-secondary px-3 py-2 disabled:opacity-40">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop tx table */}
+            <div className="card p-0 overflow-hidden hidden md:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-800">

@@ -16,12 +16,12 @@ function StatCard({ title, value, icon: Icon, color, delay }: any) {
   return (
     <motion.div custom={delay} variants={cardVariants} initial="hidden" animate="visible" className="card">
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-400 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-white">{value}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs sm:text-sm text-gray-400 mb-1 truncate">{title}</p>
+          <p className="text-lg sm:text-2xl font-bold text-white truncate">{value}</p>
         </div>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
-          <Icon className="w-5 h-5 text-white" />
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ml-2 ${color}`}>
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
       </div>
     </motion.div>
@@ -78,14 +78,14 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">
           Good day, {user?.fullName?.split(' ')[0]} 👋
         </h1>
-        <p className="text-gray-400 mt-1">Here's what's happening with your account</p>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">Here's what's happening with your account</p>
       </motion.div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard title="Total Balance" value={`$${totalBalance.toFixed(2)}`} icon={Wallet} color="bg-brand-600" delay={0} />
         <StatCard title="Wallets" value={wallets?.length ?? 0} icon={TrendingUp} color="bg-purple-600" delay={1} />
         <StatCard title="Total Deposits" value={`$${deposits.toFixed(2)}`} icon={ArrowDownLeft} color="bg-green-600" delay={2} />
@@ -110,8 +110,8 @@ export default function Dashboard() {
                     <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <XAxis dataKey="date" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 11 }} />
+                <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 11 }} width={40} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', color: '#fff' }}
                 />

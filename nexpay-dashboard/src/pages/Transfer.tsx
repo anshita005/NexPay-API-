@@ -111,8 +111,8 @@ export default function Transfer() {
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl font-bold text-white">Transfer Funds</h1>
-        <p className="text-gray-400 mt-1">Send money instantly to any wallet</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">Transfer Funds</h1>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">Send money instantly to any wallet</p>
       </motion.div>
 
       <AnimatePresence mode="wait">

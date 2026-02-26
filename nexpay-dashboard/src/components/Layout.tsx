@@ -10,12 +10,12 @@ export default function Layout() {
   return (
     <div className="flex h-screen overflow-hidden bg-gray-950">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="p-8"
+          className="p-4 sm:p-6 lg:p-8"
         >
           <Outlet />
         </motion.div>
